@@ -5,6 +5,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken')
 const mongoose =require('mongoose')
 const Message = require('../models/Message'); 
+
  
 exports.fetchChat = async(req, res) =>{
     try{
@@ -51,14 +52,14 @@ exports.fetchChat = async(req, res) =>{
 }
 
 exports.sendMessage = async(req, res) =>{
-    
+
     try{
         const {token, userName, message} = req.body;
 
         const userDetails = jwt.verify(token, process.env.JWT_SECRET).userDetails;
         //console.log(userDetails);
 
-        //const otherDetails = await User.findOne({userName});
+        //const otherDetails = await User.findOne({userName});    
         // console.log(otherDetails);
 
         const time = Date.now();
@@ -79,4 +80,8 @@ exports.sendMessage = async(req, res) =>{
             message:"Some Error"
         })
     }
+}
+
+exports.socketSend = (socket, io) =>{
+
 }
