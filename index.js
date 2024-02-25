@@ -9,7 +9,7 @@ const server = createServer(app);
 const cookieParser = require('cookie-parser')
 const io = new Server(httpServer, { 
     cors: {
-        origin: ["*","http://localhost:3000"]
+        origin: "*"
       }
  });
  
