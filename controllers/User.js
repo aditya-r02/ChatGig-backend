@@ -124,7 +124,7 @@ exports.searchFriend = async(req, res) =>{
             })
         }
 
-        const searchDetails = await User.findOne({userName});
+        let searchDetails = await User.findOne({userName});
 
         if (!searchDetails){
             return res.status(200).json({
@@ -134,6 +134,8 @@ exports.searchFriend = async(req, res) =>{
         }
 
         searchDetails.password = null;
+        const isFriend = searchDetails.friends.includes(details._id);
+        searchDetails.isFriend = isFriend;
 
         return res.status(200).json({
             success: true,
