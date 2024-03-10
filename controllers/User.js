@@ -135,12 +135,13 @@ exports.searchFriend = async(req, res) =>{
 
         searchDetails.password = null;
         const isFriend = searchDetails.friends.includes(details._id);
-        searchDetails.isFriend = isFriend;
+        
 
         return res.status(200).json({
             success: true,
             message:"User found!",
-            data: searchDetails
+            data: searchDetails,
+            isFriend
         })
 
 
