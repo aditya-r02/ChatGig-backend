@@ -35,6 +35,7 @@ exports.findFriends = async(req, res) =>{
     let data = [];
     for (let i=0; i<userFriends.length; i++){
         const details = await User.findOne({_id:userFriends[i]});
+        details.password = null;
         data.push(details);
     }
 
@@ -84,6 +85,7 @@ exports.fetchRequest = async(req, res) =>{
         for (let i=0; i<requestDetails.length; i++){
             //console.log(requestDetails[i]);
             const userDetails = await User.findOne({_id:requestDetails[i]});
+            userDetails.password = null;
             data.push(userDetails);
         }
 
@@ -183,7 +185,22 @@ exports.sendRequest = async(req, res) =>{
             })
         }
 
+        if (otherUser.userName===details.userName){
+            return res.status(200).json({
+                success: false,
+                message:'Cannot send request to yourself'
+            })
+        }
+
         let requestList = otherUser.requests;
+
+        if (requestList.includes(id)){
+            return res.status(200).json({
+                success: 'false',
+                message: "Request already sent!"
+            })
+        }
+
         requestList.push(id);
         //console.log(requestList)
         const updated = await User.findOneAndUpdate({userName}, {requests:requestList});
@@ -219,26 +236,26 @@ exports.acceptRequest = async(req, res) =>{
         const id = userDetails._id;
 
         const currUser = await User.findOne({_id:id});
-        console.log(currUser)
+        //console.log(currUser)
 
         let requestList = currUser.requests;
         let friendsList  = currUser.friends;
 
         requestList = requestList.filter((id1)=> id1!=otherId);
         friendsList.push(otherId);
-        console.log(friendsList)
+        //console.log(friendsList)
 
         const updatedUserDetails = await User.findOneAndUpdate({_id:id}, {friends:friendsList, requests:requestList});
-        console.log(updatedUserDetails)
+        //console.log(updatedUserDetails)
 
         const otherUser = await User.findOne({_id:otherId});
-        console.log(otherUser)
+        //console.log(otherUser)
 
         const otherFriends = otherUser.friends;
         otherFriends.push(id);
         const updatedOtherDetails = await User.findOneAndUpdate({_id:otherId}, {friends:otherFriends});
 
-        console.log(updatedOtherDetails);
+        //console.log(updatedOtherDetails);
 
         return res.status(200).json({
             success: true,
